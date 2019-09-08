@@ -1,0 +1,90 @@
+<!-- <page-header [title]="'页面标题'" [breadcrumb]="breadcrumb">
+  <ng-template #breadcrumb>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item><a>一级菜单</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item><a>二级菜单</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item><a>三级菜单</a></nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </ng-template>
+</page-header> -->
+
+<nz-page-header nzBackIcon nzTitle="新建考勤组" (nzBack)="goBack()" class="new-attendance-group-header">
+  <nz-breadcrumb nz-page-header-breadcrumb>
+    <nz-breadcrumb-item><a>Home</a></nz-breadcrumb-item>
+    <nz-breadcrumb-item>
+      <a>考勤管理</a>
+    </nz-breadcrumb-item>
+    <nz-breadcrumb-item><a>考勤组管理</a></nz-breadcrumb-item>
+    <nz-breadcrumb-item><a>新建</a></nz-breadcrumb-item>
+  </nz-breadcrumb>
+</nz-page-header>
+<nz-card class="attendance-group-detail-wrap">
+  <form nz-form [formGroup]="agForm" (ngSubmit)="save()">
+    <nz-form-item>
+      <nz-form-label [nzSm]="3" [nzXs]="24" nzFor="email">考勤组名称</nz-form-label>
+      <nz-form-control [nzSm]="4" [nzXs]="24">
+        <input nz-input formControlName="name" id="name" />
+        <nz-form-explain *ngIf="agForm.get('name')?.dirty && agForm.get('name')?.errors">
+          The input is not valid E-mail!
+        </nz-form-explain>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label [nzSm]="3" [nzXs]="24" nzFor="email">参与考勤人员</nz-form-label>
+      <nz-form-control [nzSm]="4" [nzXs]="24">
+        <nz-select
+          style="width: 100%"
+          nzMode="multiple"
+          nzPlaceHolder="Please select"
+          formControlName="departments"
+          (ngModelChange)="onSelectDepartment($event)"
+        >
+          <nz-option *ngFor="let option of listOfDepartments" [nzLabel]="option.name" [nzValue]="option.id"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label [nzSm]="3" [nzXs]="24" nzFor="email">考勤组负责人</nz-form-label>
+      <nz-form-control [nzSm]="4" [nzXs]="24">
+        <nz-select style="width: 100%" nzPlaceHolder="Please select" formControlName="managers">
+          <nz-option *ngFor="let option of listOfEmployees" [nzLabel]="option.name" [nzValue]="option.id"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label [nzSm]="3" [nzXs]="24" nzFor="email">考勤类型</nz-form-label>
+      <nz-form-control [nzSm]="8" [nzXs]="24">
+        <nz-radio-group formControlName="type">
+          <label nz-radio [ngStyle]="style" nzValue="固定班制">固定班制 (每天考勤时间一样)</label>
+          <div><span>适用于：IT、金融、文化传媒、政府/事业单位、教育培训等行业</span></div>
+          <label nz-radio [ngStyle]="style" nzValue="排班制"> 排班制 (自定义设置考勤时间)</label>
+          <div><span>适用于：餐饮、制造、物流贸易、客户服务、医院等行业</span></div>
+          <label nz-radio [ngStyle]="style" nzValue="自由工时">自由工时（不设置班次，随时打卡）</label>
+          <div><span>适用于：班次没有规律、装修、家政、物流等计算工作时长的行业</span></div>
+        </nz-radio-group>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label [nzSm]="3" [nzXs]="24" nzFor="email">考勤班次</nz-form-label>
+      <nz-form-control [nzSm]="10" [nzXs]="24">
+        <nz-select style="width: 100%" nzPlaceHolder="选择班次" formControlName="schedule" nzMode="multiple">
+          <nz-option
+            *ngFor="let option of listOfSchedule"
+            [nzLabel]="option.section_des"
+            [nzValue]="option.id"
+          ></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-control [nzSpan]="14" [nzOffset]="4">
+        <button nz-button nzType="primary">保存设置,开始考勤</button>
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+</nz-card>

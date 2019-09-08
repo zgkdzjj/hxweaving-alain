@@ -1,0 +1,30 @@
+<div class="modal-header">
+  <div class="modal-title">
+    {{ 'title.department.employeeList' | i18n }}
+  </div>
+</div>
+<nz-table #empSelectionTable [nzShowTotal]="totalTemplate" nzSize="small" [nzData]="allEmployees">
+  <thead>
+    <tr>
+      <th nzShowCheckbox="true" nzShowRowSelection="true"></th>
+      <th>{{ 'STColumn.id' | i18n }}</th>
+      <th>{{ 'STColumn.name' | i18n }}</th>
+      <th>{{ 'STColumn.position' | i18n }}</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let data of empSelectionTable.data">
+      <td nzShowCheckbox [(nzChecked)]="mapOfCheckedId[data.id]" (nzCheckedChange)="refreshStatus()"></td>
+      <td>{{ data.id }}</td>
+      <td>{{ data.name }}</td>
+      <td>{{ data.position }}</td>
+    </tr>
+  </tbody>
+  <ng-template #totalTemplate let-total>
+    {{ 'pagination.total' | i18n }} {{ total }} {{ 'pagination.item' | i18n }}
+  </ng-template>
+</nz-table>
+<div class="modal-footer">
+  <button nz-button type="button" (click)="close()">{{ 'button.close' | i18n }}</button>
+  <button nz-button type="submit" nzType="primary" (click)="save()">{{ 'button.save' | i18n }}</button>
+</div>

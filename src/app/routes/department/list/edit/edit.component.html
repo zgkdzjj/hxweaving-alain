@@ -1,0 +1,126 @@
+<div class="modal-header">
+  <div class="modal-title" *ngIf="record.id > 0; else addNew">
+    {{ 'title.department.edit' | i18n }} {{ record.name }}
+  </div>
+  <ng-template #addNew>
+    <div class="modal-title">{{ 'title.department.add' | i18n }}</div>
+  </ng-template>
+</div>
+<!-- <nz-spin *ngIf="!i" class="modal-spin"></nz-spin> -->
+<!-- <sf *ngIf="i" #sf mode="edit" [schema]="schema" [ui]="ui" [formData]="i" button="none">
+  <div class="modal-footer">
+    <button nz-button type="button" (click)="close()">{{ 'button.close' | i18n }}</button>
+    <button
+      nz-button
+      type="submit"
+      nzType="primary"
+      (click)="save(sf.value)"
+      [disabled]="!sf.valid"
+      [nzLoading]="http.loading"
+    >
+      {{ 'button.save' | i18n }}
+    </button>
+  </div>
+</sf> -->
+
+<form nz-form [formGroup]="departmentForm" [nzLayout]="'horizontal'">
+  <nz-row [nzGutter]="{ xs: 8, sm: 8, md: 8, lg: 24, xl: 48, xxl: 48 }">
+    <nz-col [nzMd]="24" [nzSm]="24">
+      <nz-form-item>
+        <nz-form-label [nzMd]="6" [nzSm]="24" nzRequired nzFor="name"
+          >{{ 'label.department.name' | i18n }}
+        </nz-form-label>
+        <nz-form-control [nzMd]="16" [nzSm]="24">
+          <input nz-input formControlName="name" id="name" />
+          <nz-form-explain *ngIf="departmentForm.get('name')?.dirty && departmentForm.get('name')?.errors">
+            The input is invalid.
+          </nz-form-explain>
+        </nz-form-control>
+      </nz-form-item>
+    </nz-col>
+
+    <nz-col [nzMd]="24" [nzSm]="24">
+      <nz-form-item>
+        <nz-form-label [nzMd]="6" [nzSm]="24" nzRequired nzFor="description"
+          >{{ 'label.department.description' | i18n }}
+        </nz-form-label>
+        <nz-form-control [nzMd]="16" [nzSm]="24">
+          <input nz-input formControlName="description" id="description" />
+          <nz-form-explain
+            *ngIf="departmentForm.get('description')?.dirty && departmentForm.get('description')?.errors"
+          >
+            The input is invalid.
+          </nz-form-explain>
+        </nz-form-control>
+      </nz-form-item>
+    </nz-col>
+
+    <nz-col [nzMd]="24" [nzSm]="24">
+      <nz-form-item>
+        <nz-form-label [nzMd]="6" [nzSm]="24" nzRequired nzFor="parent_id"
+          >{{ 'label.department.parent_id' | i18n }}
+        </nz-form-label>
+        <nz-form-control [nzMd]="16" [nzSm]="24">
+          <nz-select
+            formControlName="parent_id"
+            id="parent_id"
+            zShowSearch
+            nzAllowClear
+            nzPlaceHolder="Select a superior department"
+          >
+            <nz-option *ngFor="let item of departments" [nzLabel]="item.label" [nzValue]="item.value"> </nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+    </nz-col>
+
+    <nz-col [nzMd]="24" [nzSm]="24">
+      <nz-form-item>
+        <nz-form-label [nzMd]="6" [nzSm]="24" nzRequired nzFor="parent_id"
+          >{{ 'label.department.employee_list' | i18n }}
+        </nz-form-label>
+        <nz-form-control [nzMd]="16" [nzSm]="24">
+          <button nz-button [nzSize]="'small'" (click)="addEmployee()" nzType="primary">
+            {{ 'button.department.add' | i18n }}
+          </button>
+          <nz-table
+            #empTable
+            formArrayName="employee"
+            nzShowPagination
+            nzSize="small"
+            [nzData]="employeeList"
+            [nzPageSize]="5"
+            [nzShowTotal]="totalTemplate"
+          >
+            <thead>
+              <tr>
+                <th>{{ 'STColumn.name' | i18n }}</th>
+                <th>{{ 'STColumn.position' | i18n }}</th>
+                <th>{{ 'STColumn.actions' | i18n }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let i of empTable.data">
+                <td>{{ i.name }}</td>
+                <td>{{ i.position }}</td>
+                <td>
+                  <a nz-popconfirm nzTitle="{{ 'msg.sure_to_delete' | i18n }}" (nzOnConfirm)="deleteEmployee(i.id)">{{
+                    'button.delete' | i18n
+                  }}</a>
+                </td>
+              </tr>
+            </tbody>
+            <ng-template #totalTemplate let-total
+              >{{ 'pagination.total' | i18n }} {{ total }} {{ 'pagination.item' | i18n }}</ng-template
+            >
+          </nz-table>
+        </nz-form-control>
+      </nz-form-item>
+    </nz-col>
+  </nz-row>
+
+  <div class="modal-footer">
+    <button nz-button type="button" (click)="close()">Close</button>
+    <button nz-button type="submit" nzType="primary" (click)="save()" [nzLoading]="http.loading">Save</button>
+  </div>
+</form>

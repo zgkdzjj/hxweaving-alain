@@ -1,0 +1,126 @@
+<nz-page-header nzBackIcon [nzTitle]="title" (nzBack)="goBack()" class="attendance-detail-header">
+  <nz-breadcrumb nz-page-header-breadcrumb>
+    <nz-breadcrumb-item><a>Home</a></nz-breadcrumb-item>
+    <nz-breadcrumb-item>
+      <a>考勤管理</a>
+    </nz-breadcrumb-item>
+    <nz-breadcrumb-item><a>考勤组管理</a></nz-breadcrumb-item>
+    <nz-breadcrumb-item><a>考勤详情</a></nz-breadcrumb-item>
+  </nz-breadcrumb>
+</nz-page-header>
+
+<nz-card class="attendance-detail-wrap">
+  <div class="schedule-row">
+    <h3>班次说明:</h3>
+    <div class="tag" *ngFor="let i of listOfSchedule">
+      <div class="tag-content">{{ i.sections_des }}</div>
+    </div>
+    <nz-month-picker
+      nzPlaceHolder="Select Month"
+      [ngModel]="month"
+      (ngModelChange)="onMonthChange($event)"
+    ></nz-month-picker>
+  </div>
+  <div class="attendance-table">
+    <nz-table #dynamicTable [nzBordered]="true" [nzNoResult]="noResult">
+      <thead>
+        <tr>
+          <th>姓名</th>
+          <ng-template ngFor let-d [ngForOf]="days">
+            <th>{{ d.date | date: 'd' }}</th>
+          </ng-template>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-template ngFor let-m [ngForOf]="members">
+          <tr>
+            <td>{{ m.name }}({{m.id}})</td>
+            <ng-template ngFor let-d [ngForOf]="days">
+              <td
+                (click)="onCellClick(m, d)"
+                nz-popover
+                [nzTitle]="title"
+                [nzContent]="contentTemplate"
+                nzTrigger="click"
+                style="cursor: pointer;"
+                nzPlacement="bottom"
+                [nzOverlayStyle]="overlayStyle"
+                (nzVisibleChange)="onVisibleChange($event)"
+              >
+                <!-- {{ d.date | date: 'd'  }} -->          
+                <ng-template ngFor let-c [ngForOf]="cellDtls">
+                  <div #cellDtl *ngIf="c['employee_id'] == m['id'] && c['date'] == d['date']" data-id="c['id']">{{ mapToDes(c.schedule_id) }}</div>
+                </ng-template>
+              </td>
+            </ng-template>
+          </tr>
+        </ng-template>
+      </tbody>
+      <ng-template #noResult></ng-template>
+      <ng-template #contentTemplate>
+        <!-- <a>Close</a> -->
+        <form nz-form [formGroup]="attendanceForm" (ngSubmit)="submitForm()" class="attendance-form">
+          <nz-form-item>
+            <nz-form-label [nzSm]="4" [nzXs]="24" nzFor="name">姓名</nz-form-label>
+            <nz-form-control [nzSm]="20" [nzXs]="24">
+              <input nz-input formControlName="name" id="name" style="color: currentColor;" />
+            </nz-form-control>
+          </nz-form-item>
+
+          <nz-form-item class="employee-id-cls1">
+            <nz-form-label [nzSm]="4" [nzXs]="24" nzFor="employee_id">员工编号</nz-form-label>
+            <nz-form-control [nzSm]="20" [nzXs]="24">
+              <input nz-input formControlName="employee_id" id="employee_id" style="color: currentColor;" />
+            </nz-form-control>
+          </nz-form-item>
+
+          <nz-form-item>
+            <nz-form-label [nzSm]="4" [nzXs]="24" nzFor="date">日期</nz-form-label>
+            <nz-form-control [nzSm]="20" [nzXs]="24">
+              <input nz-input formControlName="date" id="date" style="color: currentColor;" />
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label [nzSm]="4" [nzXs]="24" nzRequired nzFor="schedule">班次</nz-form-label>
+            <nz-form-control [nzSm]="20" [nzXs]="24">
+              <nz-select nzPlaceHolder="选择班次" formControlName="schedule_id">
+                <nz-option
+                  *ngFor="let option of listOfSchedule"
+                  [nzLabel]="option.sections_des"
+                  [nzValue]="option.id"
+                ></nz-option>
+              </nz-select>
+              <nz-form-explain *ngIf="attendanceForm.get('schedule')?.dirty && attendanceForm.get('schedule')?.errors">
+                The input is not valid attendance!
+              </nz-form-explain>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label [nzSm]="4" [nzXs]="24" nzRequired nzFor="money">金额</nz-form-label>
+            <nz-form-control [nzSm]="20" [nzXs]="24">
+              <nz-input-number formControlName="money" [nzMax]="500" [nzStep]="1"></nz-input-number>
+
+              <nz-form-explain *ngIf="attendanceForm.get('money')?.dirty && attendanceForm.get('money')?.errors">
+                The input is not valid money!
+              </nz-form-explain>
+            </nz-form-control>
+          </nz-form-item>
+
+          <nz-form-item>
+            <nz-form-label [nzSm]="4" [nzXs]="24" nzFor="notes">备注</nz-form-label>
+            <nz-form-control [nzSm]="20" [nzXs]="24">
+              <textarea formControlName="notes" nz-input rows="3" placeholder="备注"></textarea>
+            </nz-form-control>
+          </nz-form-item>
+
+          <nz-form-item>
+            <nz-form-control [nzSpan]="8" [nzOffset]="4">
+              <button nz-button nzType="primary" type="submit">保存</button>
+              <!-- <button nz-button (click)="resetForm($event)">Reset</button> -->
+            </nz-form-control>
+          </nz-form-item>
+        </form>
+      </ng-template>
+    </nz-table>
+  </div>
+</nz-card>

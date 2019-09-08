@@ -1,0 +1,126 @@
+{
+  "app": {
+    "name": "Alain",
+    "description": "Ng-zorro admin panel front-end framework"
+  },
+  "user": {
+    "name": "Admin",
+    "avatar": "./assets/tmp/img/avatar.jpg",
+    "email": "cipchk@qq.com"
+  },
+  "menu": [
+    {
+      "text": "主导航",
+      "i18n": "menu.main",
+      "group": true,
+      "hideInBreadcrumb": true,
+      "children": [
+        {
+          "text": "Department",
+          "i18n": "menu.department",
+          "link": "/department",
+          "icon": "anticon-team"
+        },
+        {
+          "text": "员工管理",
+          "i18n": "menu.employee",
+          "link": "/employee",
+          "icon": "anticon-team"
+        },
+        {
+          "text": "订单管理",
+          "i18n": "menu.order",
+          "link": "/order",
+          "icon": "anticon-unordered-list"
+        },
+        {
+          "text": "考勤管理",
+          "i18n": "menu.attendance",
+          "link": "/attendance",
+          "icon": "anticon-team",
+          "children": [
+            {
+              "text": "考勤组管理",
+              "link": "/attendance/group",
+              "i18n": "menu.attendance.group"
+            },
+            {
+              "text": "班次管理",
+              "link": "/attendance/schedule",
+              "i18n": "menu.attendance.schedule"
+            },
+            {
+              "text": "考勤统计",
+              "link": "/attendance/report",
+              "i18n": "menu.attendance.report"
+            }
+          ]
+        },
+        {
+          "text": "仓储管理",
+          "i18n": "menu.warehouse",
+          "link": "/warehouse",
+          "icon": "anticon-team"
+        },
+        {
+          "text": "快捷菜单",
+          "i18n": "menu.shortcut",
+          "icon": "anticon-rocket",
+          "shortcutRoot": true,
+          "children": []
+        },
+        {
+          "text": "小部件",
+          "i18n": "menu.widgets",
+          "link": "/widgets",
+          "icon": "anticon-appstore",
+          "badge": 2
+        }
+      ]
+    },
+    {
+      "text": "More",
+      "i18n": "menu.more",
+      "group": true,
+      "hideInBreadcrumb": true,
+      "children": [
+        {
+          "text": "Report",
+          "i18n": "menu.report",
+          "icon": "anticon-cloud",
+          "children": [
+            {
+              "text": "Relation",
+              "link": "/data-v/relation",
+              "i18n": "menu.report.relation",
+              "reuse": false
+            }
+          ]
+        },
+        {
+          "text": "Extras",
+          "i18n": "menu.extras",
+          "link": "/extras",
+          "icon": "anticon-link",
+          "children": [
+            {
+              "text": "Help Center",
+              "link": "/extras/helpcenter",
+              "i18n": "menu.extras.helpcenter"
+            },
+            {
+              "text": "Settings",
+              "link": "/extras/settings",
+              "i18n": "menu.extras.settings"
+            },
+            {
+              "text": "Poi",
+              "link": "/extras/poi",
+              "i18n": "menu.extras.poi"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

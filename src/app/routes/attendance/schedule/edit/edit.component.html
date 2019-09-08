@@ -1,0 +1,169 @@
+<div class="modal-header">
+  <div class="modal-title">编辑 {{ record.id }} 信息</div>
+</div>
+<nz-spin *ngIf="loading" class="modal-spin"></nz-spin>
+
+<div class="modal-body">
+  <span>班次名称</span>
+  <input nz-input class="serial" [(ngModel)]="serial" />
+  <div class="serial-tips">最多10个字符（中英文或者数字）</div>
+  <span class="schedule-times">设置该班次一天内上下班的次数</span>
+  <!-- <nz-button-group #sectionsBtn class="schedule-btn-group">
+    <button #one nz-button value="1" (click)="sectionClick(1)">1天1次上下班</button>
+    <button #two nz-button value="2" (click)="sectionClick(2)">1天2次上下班</button>
+    <button #three nz-button value="3" (click)="sectionClick(3)">1天3次上下班</button>
+  </nz-button-group> -->
+  <nz-radio-group
+    #sectionBtn
+    class="schedule-btn-group"
+    [(ngModel)]="sectionCount"
+    (ngModelChange)="sectionCountChange(sectionCount)"
+  >
+    <label nz-radio-button [nzValue]="1">
+      1天1次上下班
+    </label>
+    <label nz-radio-button [nzValue]="2">
+      1天2次上下班
+    </label>
+    <label nz-radio-button [nzValue]="3">
+      1天3次上下班
+    </label>
+  </nz-radio-group>
+  <label nz-checkbox [(ngModel)]="rangeChecked" (ngModelChange)="onRangeChange($event)">设置打卡时间段</label>
+  <div *ngIf="!rangeChecked">
+    <div class="time-selector-row" *ngFor="let s of sections | slice: 0:sectionCount; let i = index">
+      <div class="start-work">
+        <span>第{{ i + 1 }}次 上班: </span>
+        <nz-time-picker
+          [(ngModel)]="startPicker[i]"
+          (ngModelChange)="timePickerChange($event, 'startPicker', i)"
+          nzFormat="HH:mm"
+        ></nz-time-picker>
+      </div>
+      <div class="end-work">
+        <span>下班: </span>
+        <nz-time-picker
+          [(ngModel)]="endPicker[i]"
+          (ngModelChange)="timePickerChange($event, 'endPicker', i)"
+          nzFormat="HH:mm"
+        ></nz-time-picker>
+        <div
+          class="across"
+          *ngIf="endPicker[i] != undefined && endPicker[i]?.getTime() - startPicker[i]?.getTime() < 0"
+        >
+          <span>次日</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="rangeChecked">
+    <nz-table #smallTable nzSize="small">
+      <thead>
+        <tr style="background-color: #f2f2f2">
+          <th style="width: 40%; text-align: center;">上下班时间</th>
+          <th style="width: 60%; text-align: center;">打卡范围限制</th>
+        </tr>
+      </thead>
+      <ng-container *ngFor="let s of sections | slice: 0:sectionCount; let i = index">
+        <tr>
+          <td>
+            <span>第{{ i + 1 }}次 </span><span>上班: </span>
+            <nz-time-picker
+              [(ngModel)]="startPicker[i]"
+              (ngModelChange)="timePickerChange($event, 'startPicker', i)"
+              nzFormat="HH:mm"
+            ></nz-time-picker>
+          </td>
+          <td>
+            <nz-time-picker
+              #startFromPk
+              [(ngModel)]="startFromPicker[i]"
+              (ngModelChange)="timePickerChange($event, 'startFromPicker', i)"
+              nzFormat="HH:mm"
+            ></nz-time-picker>
+            至
+            <nz-time-picker
+              [(ngModel)]="startToPicker[i]"
+              (ngModelChange)="timePickerChange($event, 'startToPicker', i)"
+              nzFormat="HH:mm"
+            ></nz-time-picker>
+            <div
+              class="across"
+              *ngIf="startToPicker[i] != undefined && startToPicker[i]?.getTime() - startFromPicker[i]?.getTime() < 0"
+            >
+              <span>次日</span>
+            </div>
+            <span style="margin-left: 5px">可打卡上班</span>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <span style="color: #f2f2f2">第{{ i + 1 }}次 </span><span>下班: </span>
+            <nz-time-picker
+              [(ngModel)]="endPicker[i]"
+              (ngModelChange)="timePickerChange($event, 'endPicker', i)"
+              nzFormat="HH:mm"
+            ></nz-time-picker>
+            <div
+              class="across"
+              *ngIf="endPicker[i] != undefined && endPicker[i]?.getTime() - startPicker[i]?.getTime() < 0"
+            >
+              <span>次日</span>
+            </div>
+          </td>
+          <td>
+            <nz-time-picker
+              [(ngModel)]="endFromPicker[i]"
+              (ngModelChange)="timePickerChange($event, 'endFromPicker', i)"
+              nzFormat="HH:mm"
+            ></nz-time-picker>
+            至
+            <nz-time-picker
+              [(ngModel)]="endToPicker[i]"
+              (ngModelChange)="timePickerChange($event, 'endToPicker', i)"
+              nzFormat="HH:mm"
+            ></nz-time-picker>
+            <div
+              class="across"
+              *ngIf="endToPicker[i] != undefined && endToPicker[i]?.getTime() - endFromPicker[i]?.getTime() < 0"
+            >
+              <span>次日</span>
+            </div>
+            <span style="margin-left: 5px">可打卡上班</span>
+          </td>
+        </tr>
+      </ng-container>
+    </nz-table>
+  </div>
+  <label
+    class="off-duty-check"
+    nz-checkbox
+    [(ngModel)]="isOffDutyFreeCheck"
+    (ngModelChange)="onOffDutyCheckChange($event)"
+    >下班不用打卡（开启后，下班不打卡也不会记作异常）</label
+  >
+  <nz-divider></nz-divider>
+  <div class="tolreance">
+    <span>人性化班次</span>
+    <div class="late">
+      <label nz-checkbox [(ngModel)]="lateCheck">允许迟到分钟数</label>
+      <nz-input-number [(ngModel)]="lateMin" [nzMin]="1" [nzMax]="60" [nzStep]="1"></nz-input-number>
+    </div>
+    <div class="very-late">
+      <label nz-checkbox [(ngModel)]="veryLateCheck">严重迟到分钟数</label>
+      <nz-input-number [(ngModel)]="veryLateMin" [nzMin]="1" [nzMax]="60" [nzStep]="1"></nz-input-number>
+    </div>
+    <div class="absence">
+      <label nz-checkbox [(ngModel)]="absenceCheck">旷工迟到分钟数</label>
+      <nz-input-number [(ngModel)]="absenceMin" [nzMin]="1" [nzMax]="60" [nzStep]="1"></nz-input-number>
+    </div>
+  </div>
+</div>
+<div class="modal-footer">
+  <button nz-button type="button" (click)="close()">关闭</button>
+  <button nz-button type="button" nzType="primary" (click)="save()" [nzLoading]="http.loading">
+    保存
+  </button>
+</div>
+<ng-template #customTpl let-name> </ng-template>
